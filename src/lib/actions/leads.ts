@@ -3,6 +3,8 @@
 import { createClient } from "@/lib/supabase/server"
 import { leadSchema } from "@/lib/schemas/lead"
 import { revalidatePath } from "next/cache"
+import { calculateScore } from "@/lib/scoring"
+import type { Lead } from "@/lib/types"
 
 export async function getLeads(params?: {
   search?: string
@@ -50,8 +52,11 @@ export async function createLead(formData: unknown) {
   const parsed = leadSchema.safeParse(formData)
   if (!parsed.success) return { error: parsed.error.flatten().fieldErrors }
 
+  const { total } = calculateScore(parsed.data as unknown as Partial<Lead>)
+  const dataWithScore = { ...parsed.data, score: total }
+
   const supabase = await createClient()
-  const { error } = await supabase.from("leads").insert(parsed.data)
+  const { error } = await supabase.from("leads").insert(dataWithScore)
 
   if (error) return { error: error.message }
   revalidatePath("/leads")
