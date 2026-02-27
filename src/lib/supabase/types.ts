@@ -41,6 +41,8 @@ export interface Database {
           tags: string[]
           notes: string | null
           raw_data: Json
+          email_verified: "valid" | "invalid" | "disposable" | "unknown" | null
+          enriched_at: string | null
         }
         Insert: {
           id?: string
@@ -73,6 +75,8 @@ export interface Database {
           tags?: string[]
           notes?: string | null
           raw_data?: Json
+          email_verified?: "valid" | "invalid" | "disposable" | "unknown" | null
+          enriched_at?: string | null
         }
         Update: {
           id?: string
@@ -105,6 +109,8 @@ export interface Database {
           tags?: string[]
           notes?: string | null
           raw_data?: Json
+          email_verified?: "valid" | "invalid" | "disposable" | "unknown" | null
+          enriched_at?: string | null
         }
       }
       imports: {
@@ -140,6 +146,76 @@ export interface Database {
           imported_rows?: number
           duplicates?: number
           errors?: Json
+        }
+      }
+      scraping_jobs: {
+        Row: {
+          id: string
+          created_at: string
+          name: string
+          source_type: string
+          config: Json
+          status: "pending" | "running" | "completed" | "failed"
+          results: Json
+          total_results: number
+          imported_results: number
+          error: string | null
+          started_at: string | null
+          completed_at: string | null
+        }
+        Insert: {
+          id?: string
+          created_at?: string
+          name: string
+          source_type?: string
+          config?: Json
+          status?: "pending" | "running" | "completed" | "failed"
+          results?: Json
+          total_results?: number
+          imported_results?: number
+          error?: string | null
+          started_at?: string | null
+          completed_at?: string | null
+        }
+        Update: {
+          id?: string
+          created_at?: string
+          name?: string
+          source_type?: string
+          config?: Json
+          status?: "pending" | "running" | "completed" | "failed"
+          results?: Json
+          total_results?: number
+          imported_results?: number
+          error?: string | null
+          started_at?: string | null
+          completed_at?: string | null
+        }
+      }
+      enrichment_logs: {
+        Row: {
+          id: string
+          created_at: string
+          lead_id: string
+          provider: string
+          data: Json
+          status: "success" | "error" | "skipped"
+        }
+        Insert: {
+          id?: string
+          created_at?: string
+          lead_id: string
+          provider: string
+          data?: Json
+          status?: "success" | "error" | "skipped"
+        }
+        Update: {
+          id?: string
+          created_at?: string
+          lead_id?: string
+          provider?: string
+          data?: Json
+          status?: "success" | "error" | "skipped"
         }
       }
     }
